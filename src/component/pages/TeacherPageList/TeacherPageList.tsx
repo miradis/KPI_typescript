@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { TeacherCard } from "../../TeacherCard/TeacherCard";
 import { getAllTeachers } from "../../../services/userService";
+import { Link } from "react-router-dom";
 import { ITeacher } from "../../../common/ITeacher";
 const { Title } = Typography;
 const {Panel} =Collapse
@@ -11,18 +12,16 @@ const handleChange = (value: string) => {
 };
 const TeacherPageList = () => {
   
-  const [teachers, setTeachers] = useState<ITeacher[]>([]);
+  const [teachers, setTeachers] =useState<ITeacher[] | undefined>(undefined)
 
-  useEffect(() => {
-    const fetchTeachers = async () => {
-      const allTeachers = await getAllTeachers();
-      setTeachers(allTeachers);
-    };
+  useEffect (()=>{
+    const fetchTeachers = async() =>{
+      const response = await getAllTeachers();
+      setTeachers(response)
+    }
     fetchTeachers()
-    teachers.map(teacher=>{
-      console.log(teacher.name);
-    })
-  }, []);
+  },[])
+
   return (
     <>
       <Title level={1}>All teachers</Title>
@@ -62,10 +61,13 @@ const TeacherPageList = () => {
 
         <Input placeholder="Поиск по ФИО"></Input>
         
-          {teachers.map((teacher) => (
-            <Card key={teacher.id}>
-              <TeacherCard name={teacher.name} department={teacher.category_name? teacher.category_name:"no department"} />
+          {teachers?.map((teacher) => (
+            
+            <Link to={`/teachers/${teacher.teacher_id}`}>
+            <Card key={teacher.teacher_id}>
+              <TeacherCard name={teacher?.name} department={teacher.category_name? teacher.category_name:"no department"}/>
             </Card>
+            </Link>
           ))}
           </Space>
           </Card>

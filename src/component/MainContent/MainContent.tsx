@@ -1,7 +1,9 @@
 import { Layout,Col, Row, theme } from "antd";
-import React, {ReactNode} from 'react'
+import React, {ReactNode, useEffect, useState} from 'react'
 import { DropDownProfile } from "../DropDown/DropDownProfile";
 import { LeftPanel } from "../LeftPanel/LeftPanel";
+import { getRole } from "../../services/authServies";
+import { Navigate } from "react-router-dom";
 
 const { Header, Content } = Layout;
 
@@ -14,6 +16,21 @@ function MainContent({children}:MainContent) {
 //     colorBgContainer:string;
 
 // }>('ColorBgContainer')
+const [userRole, setUserRole] = useState<string[] | undefined>(undefined);
+  useEffect(()=>{
+    const getUserRole = async () => {
+      try {
+        const role = await getRole();
+        console.log("ROLE:" , role.roles)
+        setUserRole(role.roles);
+      } catch (error) {
+        setUserRole([]);
+        console.error("Failed to retrieve user role:", error);
+      }
+    };
+    getUserRole();
+},[])
+
 
 return (
     <>
@@ -34,12 +51,14 @@ return (
           float: 'right',
           marginLeft:"10px"
       }}>
-           <DropDownProfile/>
+        {userRole ? userRole?.includes('ROLE_TEACHER') && <DropDownProfile/>: null}
+        
         </div>
         </Col>
         </Row>
       </Header>
         <Content style={{background:"f0f2f5"}}>
+
         <div
           style={{
             padding: 24,

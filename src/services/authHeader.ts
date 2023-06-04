@@ -1,31 +1,35 @@
 import axios from "axios";
+import Cookies from "js-cookie";
+const API_URL="http://localhost:8088/";
 
-const authHeader =axios.create({
-  baseURL:"http://localhost:8088/",
-  headers: {
-    "Content-type": "application/json",
-    "token": `${localStorage.getItem('token')}`,
-  },
-  
-})
-export {authHeader}
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+});
 
-// authHeader.interceptors.request.use(
-//   (config)=>{
-//     const token =localStorage.getItem('token');
-//     if (token){
-//       config.headers.Authorization=`Bearer ${token}`;
-//     }
-//     return config;
-//   }
+axiosInstance.interceptors.request.use((config) => {
+  const sessionData = Cookies.get("session");
+  const token = sessionData ? JSON.parse(sessionData).accessToken : null;
+  config.headers.Authorization = `Bearer ${token}`;
+  config.headers["Cache-Control"] = "no-cache";
+  return config;
+});
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Token expired or unauthorized access
+      Cookies.remove("session")
+      window.location.href = "/"; // Redirect to the login page
+    }
+    else if (error.response && error.response.status === 403) {
+      // Access forbidden
+      // Cookies.remove("token");
+      // Cookies.remove("user");
+      window.location.href = "/unauthorized"; // Redirect to the unauthorized page
+    }
+    return Promise.reject(error);
+  }
+);
 
 
-// export default function authHeader() {
-//   const token = localStorage.getItem("token");
-//   console.log("Token: "+token)
-//   if (token) {
-//     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-//   } else {
-//     delete axios.defaults.headers.common['Authorization'];;
-//   }
-// }
+export {axiosInstance}

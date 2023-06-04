@@ -1,42 +1,64 @@
 import './App.css';
-import { MainContent } from './component/MainContent/MainConstent';
-import { Layout} from 'antd';
-import {Route, Routes} from 'react-router-dom'
+import { MainContent } from './component/MainContent/MainContent';
+import { Layout, Spin} from 'antd';
+import {Navigate, Route, Routes, useLocation, useNavigate} from 'react-router-dom'
 import { MainPage } from './component/pages/MainPage/MainPage';
 import ProfilePage from './component/pages/ProfilePage';
 import { EventPage } from './component/pages/EventListPage';
 import { TeacherPageList } from './component/pages/TeacherPageList/TeacherPageList';
 import { LoginPage } from './component/pages/LoginPage/LoginPage';
-import {getCurrentUser} from './services/authServies';
+import { getRole} from './services/authServies';
 import { useEffect, useState } from 'react';
-import { IUser } from './common/IUser';
+
 import { EventsInfo } from './component/pages/EventInfo/EventInfo';
 import { SubmissionBox } from './component/pages/SubmissionPage/SubmissionBox';
-import { getUser } from './services/authServies';
+import { AssignPage } from './component/pages/AssignPage/AssignPage';
+import { CreateAccountPage } from './component/pages/CreatePage/CreateAccountPage';
+import { Unauthorized } from './component/pages/UnauthorizedPage/UnauthorizedPage';
+import { ProtectedRoute } from './common/ProtectedRoute';
+import { NotFoundPage } from './component/pages/NotFoundPage/NotFoundPage';
+import { CreateTaskPage } from './component/pages/CreateTaskPage/CreateTaskPage';
+import { EventProgressPage } from './component/pages/EventProgressPage/EventProgressPage';
 function App() { 
-  const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
-  
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const user = await getUser();
-      setCurrentUser(user || undefined);
+      const role =await getRole();
+      setIsLoading(false)
+      
     };
     fetchCurrentUser();
   }, []);
-  
-  
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Routes>
-        {/* {!currentUser && <Route path='/login' element={<LoginPage/>}></Route>}
-        <Route path="/" element={<MainContent><MainPage /></MainContent>}></Route> */}
-        {currentUser ? <Route path='/' element={<LoginPage/>}></Route>: <Route path='/Main' element={<MainContent><MainPage /></MainContent>}></Route>}
-        {currentUser && <Route path='/Main' element={<MainContent><MainPage /></MainContent>}></Route>}
-        <Route path='/events/Info'element={<MainContent><EventsInfo></EventsInfo></MainContent>}></Route>
-        <Route path='/events' element={<MainContent><EventPage/></MainContent>}></Route>
-        <Route path="/teachers" element={<MainContent><TeacherPageList/></MainContent>}></Route>
-        <Route path='/profile' element={<MainContent><ProfilePage/></MainContent>}></Route>
-        <Route path='/submission' element={<MainContent><SubmissionBox></SubmissionBox></MainContent>}></Route>
+        {/* Public routes */}
+        <Route path="/" element={<LoginPage />} />
+
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute/> } >
+        <Route path="/main" element={<MainContent><MainPage /></MainContent>} />
+        <Route path="/main" element={<MainContent><MainPage /></MainContent>} />
+        <Route path="/events/:id" element={<MainContent><EventsInfo /></MainContent>} />
+        <Route path="/events/:teacherId/:eventId" element={<MainContent><EventsInfo /></MainContent>} />
+        <Route path="/events/tasks" element={<MainContent><EventPage /></MainContent>}/>
+        <Route path='/events/tasks/:id' element={<MainContent><EventProgressPage/></MainContent>}/>
+        <Route path='/events/tasks/create/:id' element={<MainContent><CreateTaskPage/></MainContent>}/>
+        <Route path="/events/tasks/edit/:id" element={<MainContent><CreateTaskPage /></MainContent>} />
+        <Route path="/events/reports" element={<MainContent><div>Reports</div></MainContent>} />
+        <Route path="/events/assigning" element={<MainContent><AssignPage /></MainContent>} />
+        <Route path="/events/assigning/createPage" element={<MainContent><CreateAccountPage /></MainContent>} />
+        <Route path="/teachers" element={<MainContent><TeacherPageList /></MainContent>} />
+        <Route path="/teachers/:id" element={<MainContent><ProfilePage /></MainContent>} />
+        <Route path="/profile" element={<MainContent><ProfilePage /></MainContent>} />
+        <Route path="/submission/:id" element={<MainContent><SubmissionBox /></MainContent>}/>
+        </Route>
+        <Route path='/LogOut'/>
+        <Route path="/unauthorized" element={<Unauthorized />}/>
+        <Route path="*" element={<NotFoundPage/>}/>
+        {/* <Route path="/events/tasks/teachers" element={<MainContent><ProgressListPage/></MainContent>}/> */}
+
       </Routes>
     </Layout>
   );

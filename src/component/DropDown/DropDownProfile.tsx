@@ -6,24 +6,28 @@ import {
      LogoutOutlined, 
      DownOutlined} from '@ant-design/icons'
 import {Dropdown, Space, Avatar, Typography} from 'antd';
-import { getCurrentUser, getUser, logOut } from '../../services/authServies';
-import {useNavigate} from "react-router-dom"
+import { getCurrentUser, getRole, logOut } from '../../services/authServies';
+
 
 
 const { Text } = Typography;
 function DropDownProfile(){
 
-    const navigate =useNavigate()
-    const [userEmail, setUserEmail] =useState()
+    const [userEmail, setUserEmail] =useState<string | null>(null)
     useEffect(()=>{
-        // const user = async ()=>{
-        //     getUser();
-        // setUserEmail(user.userEmail)}
-        // const fetchCurrentUser= async ()=>{
-        //     const user = await getCurrentUser();
-        //     setUserEmail(user.userEmail);
-        // }
-        // fetchCurrentUser();   
+        const fetchCurrentUser = async () => {
+            const role = await getRole();
+            if (role.roles.includes("ROLE_ADMIN")){
+                return
+            }
+            else{
+                console.log("TEACHER:",role.roles)
+            const user = await getCurrentUser();
+            if (user && user.email) {
+                setUserEmail(user.email);
+              }}
+          };
+          fetchCurrentUser();
       }, []);
     //UseState для выпадающего меню
     const [dropDownVisible, setDropDownVisible] =useState(false)

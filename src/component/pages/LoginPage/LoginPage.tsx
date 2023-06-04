@@ -5,30 +5,22 @@ import {WindowsOutlined} from '@ant-design/icons'
 import { login } from "../../../services/authServies";
 import { useNavigate } from "react-router-dom";
 import { useEffect,useState } from "react";
-import { IUser } from "../../../common/IUser";
 
-import { getCurrentUser } from "../../../services/authServies";
+
+
+
+type SizeType = Parameters<typeof Form>[0]['size'];
 const LoginPage = ()=>{
-  const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState("");
-  // useEffect(() => {
-  //   const fetchCurrentUser = async () => {
-  //     const user = await getCurrentUser();
-  //     console.log("User : "+user);
-  //     // if (user) {
-  //     //   setCurrentUser(user);
-  //     // }
-  //     // else{
-  //     //   setCurrentUser(undefined)
-  //     // }
-  //   };
   
-  //   fetchCurrentUser();
-  // }, []);
+  const [componentSize, setComponentSize] = useState<SizeType | 'default'>('default');
+
+  const onFormLayoutChange = ({ size }: { size: SizeType }) => {
+    setComponentSize(size);
+  }
     const navigate = useNavigate();
 
     const onFinish = (values:any) => {
-        // console.log('Success:', values);
         handleLogin(values);
       };
       
@@ -38,10 +30,9 @@ const LoginPage = ()=>{
 
     const handleLogin =(formValue: {username:string, password:string})=>{
         const {username, password} =formValue;
-
+        
         login(username, password)
         .then((response)=>{
-            localStorage.setItem("user", JSON.stringify(response.data))
             navigate("/Main"); // Navigate to the profile page
         }).catch((error)=>{
             const resMessage =
@@ -58,7 +49,6 @@ const LoginPage = ()=>{
                   setErrorMessage(resMessage)
                 }
         })
-        getCurrentUser();
     }
     return(
     <Layout style={{
@@ -72,14 +62,16 @@ const LoginPage = ()=>{
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 800 }}
-        initialValues={{ remember: true }}
+        style={{ maxWidth: 800, display:"flex", flexDirection:"column"}}
+        initialValues={{ size: componentSize }}
+        onValuesChange={onFormLayoutChange}
+        size={componentSize as SizeType}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <div className="logo-container" >
-            <img src={logo}/>
+        <div className="logo-container">
+            <img src={logo} style={{width:"300px"}}/>
         </div>
         {errorMessage && (
           <Form.Item wrapperCol={{span: 16}} style={{color:"red", textAlign: "center"}}>
@@ -87,7 +79,7 @@ const LoginPage = ()=>{
           </Form.Item>
         )}
         <Form.Item
-          label="username"
+          label="Username:"
           name="username"
           rules={[{required: true, message: "Please input your username"}]}
           wrapperCol={{ span: 16 }}
@@ -95,17 +87,15 @@ const LoginPage = ()=>{
           <Input />
         </Form.Item>
         <FormItem
-          label="password"
+          label="Password:"
           name="password"
           rules={[{required:true, message:"Please input passwod" }]}
           wrapperCol={{ span: 16 }}
         >
           <Input.Password />
         </FormItem>
+          <Button  type="primary" htmlType="submit" size='large'  icon={<WindowsOutlined />}>Sign with corporate E-mail</Button>
         <Space />
-        <FormItem >
-          <Button  type="primary" htmlType="submit" size='large' style={{width: '150%'}} icon={<WindowsOutlined />}>Sign with corporate E-mail</Button>
-        </FormItem>
       </Form>
     </Layout>);
 }

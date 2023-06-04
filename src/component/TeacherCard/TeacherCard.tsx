@@ -10,7 +10,6 @@ interface TeacherCardProps {
 const TeacherCard =({name,department}:TeacherCardProps)=>{
     return(
           <Meta style={{}}
-          
           avatar={<Avatar size={64} icon={<UserOutlined/>}/>}
           title={name}
           description={department}/>

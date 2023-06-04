@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Card, Button, Typography } from "antd";
-import CategoryTabs from "../../CategoryTabs/CategoryTabs";
-import CategoryModal from "../../CategoryModal/CategoryModal";
-import { createCategory, createStatus, deleteEvent, getAllCategories } from "../../../services/userService";
+import { useState } from "react";
 import { Event, ITask } from "../../../common/IEvent";
-import useCategoryActions from "./useCategoryActions";
+import { Modal, Radio } from "antd";
+import { createCategory, createStatus, getAllCategories } from "../../../services/userService";
 
-
-const { Title } = Typography;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-interface EventPageProps {}
-
-const EventPage: React.FC<EventPageProps> = () => {
-  type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
-
+const useCategoryActions = () => {
   const [categories, setCategories] = useState<ITask[]>([]);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [save, setSave] =useState<boolean>(false);
-  const [modalAction, setModalAction] = useState<string | null>(null);
+  const [modalAction, setModalAction] = useState<"delete" | "edit" | null>(null);
   const [editValue, setEditValue] = useState("");
 
   const handleCreateStatus = async(currentCategory:number,statusName:string)=>{
@@ -39,9 +30,7 @@ const EventPage: React.FC<EventPageProps> = () => {
     const allCategories: ITask[] = await getAllCategories();
     setCategories(allCategories);
   };
-  const handleDeleteRow = async(eventId: number) => {
-    try{
-      await deleteEvent(eventId)
+  const handleDeleteRow = (eventId: number) => {
     const updatedCategories = [...categories];
     updatedCategories.forEach((category: ITask) => {
       category.statuses.forEach((status: any) => {
@@ -50,33 +39,23 @@ const EventPage: React.FC<EventPageProps> = () => {
     });
     setSave(true);
     setCategories(updatedCategories);
-  }
-  catch(error){
-    console.log("ERROR:",error)
-  }
   };
 
   const handleEditTab = (targetKey: TargetKey, action: "add" | "remove") => {
-    console.log("TARGET KEY:",targetKey);
     if (action === "add" && targetKey === "2") {
-      console.log("4TARGET KEY:",targetKey);
       setIsModalOpen(true);
       setCurrentCategory(null);
     } else {
-      console.log("5TARGET KEY:",targetKey);
       setCurrentCategory(null);
       handleEdit(targetKey, action);
     }
   };
 
   const handleEdit = (targetKey: TargetKey, action: "add" | "remove") => {
-    console.log("2TARGET KEY:", targetKey)
     if (action === "add") {
-      console.log("3TARGET KEY:",targetKey);
       setIsModalOpen(true);
       setModalAction("edit");
     } else if (action === "remove") {
-      console.log("6TARGET KEY:",targetKey);
       setIsModalOpen(true);
       setModalAction("delete");
     }
@@ -99,44 +78,27 @@ const EventPage: React.FC<EventPageProps> = () => {
     setModalAction(null);
   };
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const allCategories: ITask[] = await getAllCategories();
-      setCategories(allCategories);
-    };
-    fetchCategories();
-  }, []);
-
-
-  return (
-    <>
-    <Title level={2}>Tasks</Title>
-      <Card>
-        <CategoryTabs 
-        categories={categories} 
-        handleDelete={handleDeleteRow} 
-        handleEditTab={handleEditTab}
-        handleCurrentCategory={handleCurrentCategory}
-        handleEdit={handleEdit}
-         />
-        {save && <Button type="primary">Save</Button>}
-      </Card>
-      <CategoryModal
-        modalAction= {modalAction}
-        currentCategory={currentCategory}
-        isModalOpen={isModalOpen}
-        handleOk={handleModalOk}
-        handleCancel={handleModalCancel}
-        createStatus={handleCreateStatus}
-        createCategory={handleCreateCategory}
-        editValue={editValue}
-        setEditValue={setEditValue}
-      />
-      {/* <CategoryModal
-      
-      /> */}
-    </>
-  );
+  return {
+    categories,
+    setCategories,
+    currentCategory,
+    setCurrentCategory,
+    isModalOpen,
+    setIsModalOpen,
+    handleDeleteRow,
+    handleEditTab,
+    handleEdit,
+    handleModalOk,
+    handleModalCancel,
+    editValue,
+    setEditValue,
+    modalAction,
+    handleCreateCategory,
+    handleCurrentCategory,
+    handleCreateStatus,
+    save,
+    setSave,
+  };
 };
 
-export { EventPage };
+export default useCategoryActions;
