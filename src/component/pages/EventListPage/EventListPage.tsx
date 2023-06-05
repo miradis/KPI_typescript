@@ -2,43 +2,80 @@ import React, { useState, useEffect } from "react";
 import { Card, Button, Typography } from "antd";
 import CategoryTabs from "../../CategoryTabs/CategoryTabs";
 import CategoryModal from "../../CategoryModal/CategoryModal";
-import { createCategory, createStatus, deleteEvent, getAllCategories } from "../../../services/userService";
+import { createCategory, createStatus, deleteCategory, deleteEvent, deleteStatus, getAllCategories, updateCategory, updateStatus } from "../../../services/userService";
 import { Event, ITask } from "../../../common/IEvent";
-import useCategoryActions from "./useCategoryActions";
 
 
 const { Title } = Typography;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 interface EventPageProps {}
-
+export interface ModalAction {
+  name:string,
+  action:string
+}
 const EventPage: React.FC<EventPageProps> = () => {
   type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
   const [categories, setCategories] = useState<ITask[]>([]);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [save, setSave] =useState<boolean>(false);
-  const [modalAction, setModalAction] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState("");
+  const [modalAction, setModalAction] = useState<ModalAction | null>(null);
 
-  const handleCreateStatus = async(currentCategory:number,statusName:string)=>{
-    if (currentCategory){
-    await createStatus(currentCategory,statusName);
-    const allCategories: ITask[] = await getAllCategories();
-    setCategories(allCategories);
-    }
-    else{ console.log("category ID is undefined:"+currentCategory )}
+  //Getting selected category and status from CategoryTable
+  const handleCurrentStatus =(status_id:number)=>{
+    setCurrentStatus(status_id)
   }
   const handleCurrentCategory =(category_id:number) =>{
     setCurrentCategory(category_id);
 } 
-
-  const handleCreateCategory = async (categoryName: string) => {
-    await createCategory(categoryName);
+//Request to update state after each request
+  const handleGetAllEvents=async()=>{
     const allCategories: ITask[] = await getAllCategories();
     setCategories(allCategories);
+}
+//Status requests 
+  const handleCreateStatus = async(statusName:string)=>{
+    if (currentCategory){
+    await createStatus(currentCategory,statusName);
+    handleGetAllEvents()
+    }
+    else{ console.log("category ID is undefined:"+currentCategory )}
+  }
+  const handleUpdateStatus = async (newStatus:string)=>{
+    if (currentStatus){
+      await updateStatus(currentStatus,newStatus);
+      handleGetAllEvents()
+    }
+  }
+  const handleDeleteStatus = async()=>{
+    if (currentStatus){
+      await deleteStatus(currentStatus)
+      handleGetAllEvents()
+  }
+}
+
+  //Category requests
+  const handleDeleteCategory =async()=>{  
+      if (currentCategory){
+      await deleteCategory(currentCategory);
+      handleGetAllEvents()
+    }
+  }
+
+  const handleUpdateCategory =async(newCategory:string)=>{
+    if (currentCategory){
+    await updateCategory(currentCategory,newCategory)
+    handleGetAllEvents()
+    }
+  }
+  const handleCreateCategory = async (categoryName: string) => {
+    await createCategory(categoryName);
+    handleGetAllEvents()
   };
+  //Delete row frim table
   const handleDeleteRow = async(eventId: number) => {
     try{
       await deleteEvent(eventId)
@@ -56,36 +93,37 @@ const EventPage: React.FC<EventPageProps> = () => {
   }
   };
 
-  const handleEditTab = (targetKey: TargetKey, action: "add" | "remove") => {
-    console.log("TARGET KEY:",targetKey);
-    if (action === "add" && targetKey === "2") {
-      console.log("4TARGET KEY:",targetKey);
+  //Edit first tab in CategoryTable: category tab
+  const handleEditCategory = (targetKey: TargetKey, action: "add" | "remove") => {
+    if (action === "add") {
       setIsModalOpen(true);
       setCurrentCategory(null);
-    } else {
-      console.log("5TARGET KEY:",targetKey);
+      setModalAction({ name: "category", action: "add" })
+    }
+    else if(action==="remove" ){
+      setIsModalOpen(true)
+      setModalAction({ name:"category", action:"remove"})
+    }
+     else {
       setCurrentCategory(null);
-      handleEdit(targetKey, action);
+      handleEditStatus(targetKey, action);
     }
   };
-
-  const handleEdit = (targetKey: TargetKey, action: "add" | "remove") => {
-    console.log("2TARGET KEY:", targetKey)
+  //Edit second tab in CategoryTable:status tab
+  const handleEditStatus = (targetKey: TargetKey, action: "add" | "remove") => {
     if (action === "add") {
-      console.log("3TARGET KEY:",targetKey);
+      setModalAction({ name: "status", action: "add" })
       setIsModalOpen(true);
-      setModalAction("edit");
     } else if (action === "remove") {
-      console.log("6TARGET KEY:",targetKey);
       setIsModalOpen(true);
-      setModalAction("delete");
+      setModalAction({ name: "status", action: "remove" })
     }
   };
 
   const handleModalOk = () => {
-    if (modalAction === "delete") {
+    if (modalAction?.action === "delete") {
       
-    } else if (modalAction === "edit") {
+    } else if (modalAction?.action === "edit") {
       // Handle edit action
       // ...
     }
@@ -115,22 +153,28 @@ const EventPage: React.FC<EventPageProps> = () => {
         <CategoryTabs 
         categories={categories} 
         handleDelete={handleDeleteRow} 
-        handleEditTab={handleEditTab}
+        handleEditCategory={handleEditCategory}
         handleCurrentCategory={handleCurrentCategory}
-        handleEdit={handleEdit}
+        handleCurrentStatus={handleCurrentStatus}
+        handleEditStatus={handleEditStatus}
          />
         {save && <Button type="primary">Save</Button>}
       </Card>
       <CategoryModal
         modalAction= {modalAction}
         currentCategory={currentCategory}
+        currentStatus={currentStatus}
         isModalOpen={isModalOpen}
         handleOk={handleModalOk}
         handleCancel={handleModalCancel}
         createStatus={handleCreateStatus}
+        updateStatus={handleUpdateStatus}
+        deleteStatus ={handleDeleteStatus}
         createCategory={handleCreateCategory}
-        editValue={editValue}
-        setEditValue={setEditValue}
+        updateCategory={handleUpdateCategory}
+        deleteCategory ={handleDeleteCategory}
+
+        
       />
       {/* <CategoryModal
       

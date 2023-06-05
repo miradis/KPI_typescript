@@ -1,4 +1,4 @@
-import { Avatar, Row,  Space, Tabs, Spin, Button,} from 'antd'
+import { Avatar, Row,  Space, Tabs, Spin, Button, Typography,} from 'antd'
 import {UserOutlined,} from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom';
 import { IEvent } from '../../../common/IEvent';
@@ -8,7 +8,7 @@ import { useProfile } from './useProfile';
 import { BackButton } from '../../BackButton/BackBUtton';
 
 
-
+const {Text} =Typography
 
 
 const ProfilePage =()=>{
@@ -66,7 +66,7 @@ const ProfilePage =()=>{
         </Row>
         <ProfileInfo currentUser={currentUser}/>
         
-        {isOwner ?(<Tabs
+        {isOwner ?(<><Tabs
   size="large"
   type="card"
   items={[
@@ -76,8 +76,8 @@ const ProfilePage =()=>{
       children: <KpiTab currentUser={currentUser} columns={columns} />,
     },
   ]}
-/>) : null}
-       
+/>
+</>) : null}
         </>
     );
 }

@@ -1,17 +1,21 @@
-import React from "react";
-import { Modal, Form, Input } from "antd";
+import React, {useState} from "react";
+import { Modal, Form, Input, Radio, RadioChangeEvent } from "antd";
+import { ModalAction } from "../pages/EventListPage/EventListPage";
+import { deleteCategory, updateCategory, updateStatus } from "../../services/userService";
 
 interface CategoryModalProps {
   isModalOpen: boolean;
   handleOk: () => void;
   handleCancel: () => void;
+  currentStatus: number | null
   createCategory: (categoryName: string) => Promise<void>;
-  createStatus: (category_id:number, statusName: string) =>Promise<void>
+  updateCategory:(newCategory:string)=>Promise<void>
+  deleteCategory:()=>Promise<void>
+  createStatus: (statusName: string) =>Promise<void>
+  updateStatus:(newStatus:string)=>Promise<void>
+  deleteStatus:()=>Promise<void>
   currentCategory: number | null;
-  editValue: string,
-  setEditValue:(value:string)=>void;
-  modalAction: string | null
-  // modalAction: "delete" | "edit";
+  modalAction: ModalAction | null
 }
 
 const CategoryModal: React.FC<CategoryModalProps> = ({
@@ -19,23 +23,44 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
   handleOk,
   handleCancel,
   createCategory,
+  updateCategory,
+  deleteCategory,
   createStatus,
+  deleteStatus,
+  updateStatus,
   currentCategory,
-  editValue,
-  modalAction,
-  setEditValue,
+  currentStatus,
+  modalAction
 }) => {
+  const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
   const [form] = Form.useForm();
   const onFinish = async () => {
     
+  
     try {
       await form.validateFields();
-      const { categoryName,statusName} = form.getFieldsValue();
-      if (currentCategory){
-        await createStatus(currentCategory, statusName);
+      const { attribute, editName} = form.getFieldsValue();
+      if (modalAction?.name ==="category"){
+        if (modalAction?.action==="add" ){
+          await createCategory(attribute)
+        }
+        else if (modalAction?.action==="remove" && selectedValue==="edit" &&selectedValue !== undefined){
+          await updateCategory(editName) 
+        }
+        else if(modalAction?.action==="remove"  && selectedValue==="remove"&&selectedValue !== undefined){
+          await deleteCategory()
+        }
       }
-      else{
-      await createCategory(categoryName);
+      else if (modalAction?.name==="status"){
+        if (modalAction.action==="add"){
+          await createStatus(attribute)
+        }
+        else if( modalAction?.action==="remove" && selectedValue==="edit" &&selectedValue !== undefined){
+          await updateStatus(editName)
+        }
+        else if(modalAction?.action==="remove" && selectedValue==="remove"){
+          await deleteStatus()
+        }
       }
       handleOk();
     } catch (error) {
@@ -43,23 +68,49 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
     }
   };
 
+  const renderAddModal =(label:string, name:string)=>{
+    return (<Form.Item label={label} name={name}>
+    <Input />
+  </Form.Item>)
+  }
+  const renderEditModal =(label:string)=>{
+
+    const handleRadioChange = (e: RadioChangeEvent) => {
+    setSelectedValue(e.target.value);
+  };
+    return (<>
+    <Radio.Group size="small" onChange={handleRadioChange} value={selectedValue}>
+    <Radio value="edit">Edit</Radio>
+        <Radio value="remove">Remove</Radio>
+    </Radio.Group>
+
+    {selectedValue === "edit" && (
+        <Form.Item label={label} name="editName" style={{padding:"20px 10px 10px 10px"}}>
+          <Input />
+        </Form.Item>
+      )}
+    </>)
+  }
   return (
     <Modal
-    title={currentCategory ? "Status" : "Category"}
+    title={modalAction?.name==="status" ? "Status" : "Category"}
       open={isModalOpen}
       onOk={onFinish}
       onCancel={handleCancel}
     >
        <Form form={form}>
-        {currentCategory ? (
-          <Form.Item label="Status Name" name="statusName">
-            <Input />
-          </Form.Item>
-        ) : (
-          // modalAction ? ()
-          <Form.Item label="Insert name" name="categoryName">
-            <Input />
-          </Form.Item>
+        {modalAction?.name==="category" ? (
+          modalAction?.action==="add" ? (
+            renderAddModal("Insert name", "attribute")
+          ):(
+            renderEditModal("Change category")
+          )
+        ):(
+          modalAction?.action==="add" ?(
+            renderAddModal("Insert name", "attribute")
+          ):(
+           renderEditModal("Change status")
+          )
         )}
       </Form>
 

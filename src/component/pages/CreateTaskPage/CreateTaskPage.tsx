@@ -20,7 +20,9 @@ const CreateTaskPage =() =>{
             if (id){
             const response =await getEditEvent(id)
             setEvent(response)
-            form.setFieldsValue(response);
+            if (form) {
+                form.setFieldsValue(response);
+              }
             }
         }
         fetchEvent()
@@ -28,10 +30,10 @@ const CreateTaskPage =() =>{
       }, [form,id]);
     const onFinish = (values: any) => {
         if (isCreateLink) {
-            console.log("ADD")
+            
             handleCreateEvent(values);
         } else {
-            console.log("EDIT")
+            
             handleEditEvent(values);
         }
       };

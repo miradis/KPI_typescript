@@ -42,7 +42,7 @@ const CreateAccountPage = ()=>{
         const { name, email, password, confirmPassword, role } = values;
         try {
           await createAccount(name, email, password, confirmPassword, role);
-          console.log("GOOD RESULT");
+    
           navigator(-1);
         } catch (error) {
           console.log("Error: " + error);

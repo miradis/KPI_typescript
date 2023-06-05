@@ -21,7 +21,7 @@ function DropDownProfile(){
                 return
             }
             else{
-                console.log("TEACHER:",role.roles)
+    
             const user = await getCurrentUser();
             if (user && user.email) {
                 setUserEmail(user.email);

@@ -35,6 +35,11 @@ const ProfileInfo =({currentUser}: ProfileProps)=>{
             <Text>No courses</Text>
         
         <Divider/>
+        <Title level={4}>Key Perfomance indicators (KPI)</Title>
+        <div style={{alignSelf:"flex-end", display:"flex"}}>
+        <Text>Выполнена работа:{currentUser?.kpi_sum}%</Text>
+        </div>
+        <Divider/>
         </Space>)
 }
 

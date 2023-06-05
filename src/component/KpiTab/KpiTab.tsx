@@ -1,11 +1,13 @@
 import jsPDF from "jspdf";
 import  autoTable from 'jspdf-autotable';
 import { ITeacher } from "../../common/ITeacher";
-import { Button, Table } from "antd";
+import { Button, Table, Typography } from "antd";
 import {DownloadOutlined} from '@ant-design/icons'
 
+const {Text} =Typography
 const KpiTab = ({ currentUser, columns }: { currentUser: ITeacher | undefined; columns: any[] }) => {
-    const DownloadPDF = () => {
+  
+  const DownloadPDF = () => {
       const pdf = new jsPDF();
   
       // Set the custom font
@@ -51,11 +53,14 @@ const KpiTab = ({ currentUser, columns }: { currentUser: ITeacher | undefined; c
   
     return (
       <>
-        <Table columns={columns} dataSource={currentUser?.teacher_events || []} />
+        <Table columns={columns} dataSource={currentUser?.teacher_events || []}/>
+        
         <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
+          
           <Button type="primary" icon={<DownloadOutlined />} onClick={DownloadPDF}>
             Download PDF
           </Button>
+          
         </div>
       </>
     );

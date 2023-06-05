@@ -19,7 +19,6 @@ const SubmissionBox = ()=>{
   const { event, submissions, handleDownloadFile, setSubmissions } = useSubmission();
   const [teacherId, setTeacherId] =useState<string| undefined>(undefined)
   const {id} =useParams<{id?: string}>()
-  const navigate =useNavigate()
 
   const columns = [
     {
@@ -73,7 +72,6 @@ const SubmissionBox = ()=>{
 
   const handleDeleteItem =async(id:string)=>{
     try{
-      console.log("ID:"+id)
       await deleteSubmission(id);
       setSubmissions((prevSubmissions) => prevSubmissions?.filter((submission) => submission.submission_id !== id));
     }
@@ -82,7 +80,7 @@ const SubmissionBox = ()=>{
       throw error;
     }
   }
-  const renderSubmission = (sub: ISubmission, index: number) => (
+  const renderSubmission = (sub: ISubmission, ) => (
     <List.Item actions={[<Button icon={<DeleteOutlined/>} type="link" onClick={()=>handleDeleteItem(sub.submission_id)}></Button>]}>
       <div style={{ display: "flex", alignItems: "center" }}>
       <PDFIcon />
@@ -111,8 +109,7 @@ const SubmissionBox = ()=>{
               </p>
             </>
   </Dragger >
-  
-  {submissions && (
+  {submissions && Array.isArray(submissions) && (
       <>
       <List dataSource={submissions} renderItem={renderSubmission} style={{width:"80%"}}/>
       </>

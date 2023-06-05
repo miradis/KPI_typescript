@@ -26,6 +26,7 @@ const useSubmission = () => {
         setLoading(true)
         if (id && teacherId) {
           const submission = await getSubmissions(teacherId, id);
+          console.log("Submissions:",submission)
           setSubmissions(submission);
         }
       } catch (error) {

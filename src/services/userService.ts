@@ -80,7 +80,23 @@ export const createCategory = async (category:string)=>{
   const response =await axiosInstance.post(`category/add`, body)
   return response.data;
 }
-
+export const deleteCategory = async(category_id:number)=> {
+  await axiosInstance.delete(`category/delete/${category_id}`)
+  .catch((error)=>{
+    console.log("ERROR:", error)
+    throw error;
+  })
+} 
+export const updateCategory =async(category_id:number,category_name:string)=>{
+  const body={
+    category_name:category_name
+  }
+  await axiosInstance.put(`category/update/${category_id}`, body)
+  .catch((error)=>{
+    console.log("ERROR:", error);
+    throw error;
+  })
+}
 export const createStatus =async (category_id:number,name:string)=>{
   const body={
     status_name:name
@@ -88,14 +104,41 @@ export const createStatus =async (category_id:number,name:string)=>{
   const response = await axiosInstance.post(`category/${category_id}/status/add`, body)
   return response.data;
 }
+export const deleteStatus =async (statusId:number)=>{
+  await axiosInstance.delete(`status/delete/${statusId}`)
+  .catch((error)=>{
+    console.log("ERROR:",error);
+    throw error;
+  })
+}
+export const updateStatus =async(statusId:number, statusName:string)=>{
+  const body={
+    status_name:statusName
+  }
+  await axiosInstance.put(`status/update/${statusId}`, body)
+  .catch((error)=>{
+    console.log("ERROR:", error)
+    throw error;
+  })
+}
 
 export const downloadFile= async(id:string)=>{
   const response = await axiosInstance.get(`download/${id}`)
   return response.data;
 }
 
-export const getSubmissions =async (teacher_id:string, event_id:string)=>{
+export const getSubmissionsInfo =async (teacher_id:string, event_id:string)=>{
   const response =await axiosInstance.get(`event/${event_id}/teacher/${teacher_id}`)
+  .catch ((error)=>{
+    console.log(error)
+    throw error;
+    
+  });
+  return response.data;
+}
+
+export const getSubmissions =async (teacher_id:string, event_id:string)=>{
+  const response =await axiosInstance.get(`teacher/${teacher_id}/event/${event_id}/submissions`)
   .catch ((error)=>{
     console.log(error)
     throw error;
@@ -159,20 +202,7 @@ await axiosInstance.delete(`submission/delete/${id}`)
   throw error;
 })
 }
-export const addComment = async(id:string)=>{
-await axiosInstance.post(`teacher/comment/${id}`)
-.catch((error)=>{
-  console.log("Error:"+error)
-  throw error
-})
-}
-export const deleteComment =async(id:string)=>{
-  await axiosInstance.delete(`teacher/comment/${id}/delete`)
-  .catch((error)=>{
-    console.log("Error:"+error);
-    throw error;
-  })
-}
+
 
 export const createEvent=async(id:string,name:string,percentage:number, rate:string) =>{
   const body={

@@ -1,10 +1,11 @@
-import { Row, Col, Select, Card, Typography, Input, Space, Avatar, Dropdown, Collapse } from "antd";
+import { Row, Col, Select, Card, Typography, Input, Space, Avatar, Dropdown, Collapse, Spin } from "antd";
 import { useState, useEffect } from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { TeacherCard } from "../../TeacherCard/TeacherCard";
 import { getAllTeachers } from "../../../services/userService";
 import { Link } from "react-router-dom";
 import { ITeacher } from "../../../common/ITeacher";
+import {Spinner} from "../../Spinner/Spinner";
 const { Title } = Typography;
 const {Panel} =Collapse
 const handleChange = (value: string) => {
@@ -13,15 +14,22 @@ const handleChange = (value: string) => {
 const TeacherPageList = () => {
   
   const [teachers, setTeachers] =useState<ITeacher[] | undefined>(undefined)
+  const [isLoading, setIsLoading] =useState(false)
 
   useEffect (()=>{
+    
     const fetchTeachers = async() =>{
+      setIsLoading(true)
       const response = await getAllTeachers();
       setTeachers(response)
     }
     fetchTeachers()
+    setIsLoading(false)
   },[])
 
+  if (isLoading) {
+    return <Spinner/>; // Render the Spinner component when the application is loading
+  }
   return (
     <>
       <Title level={1}>All teachers</Title>

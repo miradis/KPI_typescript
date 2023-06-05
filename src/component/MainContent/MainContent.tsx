@@ -21,7 +21,7 @@ const [userRole, setUserRole] = useState<string[] | undefined>(undefined);
     const getUserRole = async () => {
       try {
         const role = await getRole();
-        console.log("ROLE:" , role.roles)
+      
         setUserRole(role.roles);
       } catch (error) {
         setUserRole([]);
