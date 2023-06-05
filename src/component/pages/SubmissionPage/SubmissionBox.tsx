@@ -95,7 +95,7 @@ const SubmissionBox = ()=>{
         <>
         <BackButton/>
         <Card style={{marginTop:"20px"}}>
-            <Title>{event?.event_name}</Title>
+            <Title level={2}>research work</Title>
         </Card>
         <Card style={{marginTop:"20px", alignItems:"center", alignContent:"center"}} >
         <Dragger style={{width:"80%", alignSelf:"flex-"}} {...props}>
