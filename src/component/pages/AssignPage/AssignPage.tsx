@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, Select, Typography } from "antd"
+import { Button, Card, Form, Input, Select, Space, Typography } from "antd"
 import { useNavigate } from "react-router-dom"
 
 import { useEffect, useState } from "react"
@@ -36,7 +36,7 @@ const AssignPage =() =>{
 
     useEffect(()=>{
        const fetchTeachers= async()=>{
-        const getTeachers =await getAllTeachers();
+        const getTeachers =await getAllUsers();
         setTeachers(getTeachers)
        }
        fetchTeachers()
@@ -58,8 +58,11 @@ const AssignPage =() =>{
       }
       fetchRate();
     },[])
-    const handleButton=()=>{
+    const handleToCreate=()=>{
         navigation("/events/assigning/createPage")
+    }
+    const handleToEdit =()=>{
+      navigation('/events/assigning/editPage')
     }
     const handleCategoryChange =(val:string) =>{
         setSelectedCategory(val);
@@ -173,9 +176,14 @@ const AssignPage =() =>{
         </Form.Item>
         <Button type="primary" style={{ width:"55%", alignSelf:"center"}} htmlType="submit">Assign</Button>
     </Form>
-    <Button type="primary" onClick={handleButton}>
+    <Space size={'large'}>
+    <Button type="primary" onClick={handleToCreate}>
     Add account
     </Button>
+    <Button type="dashed" onClick={handleToEdit}>
+      Edit Account
+      </Button>
+      </Space>
     </Card>
     </>
     )

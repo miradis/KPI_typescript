@@ -2,6 +2,7 @@ import { IEvent, ISubmission } from "./IEvent";
 
 export interface IUser {
   email:string,
+  user_id:string;
   name:string,
   roles:string[]
 } 

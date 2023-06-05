@@ -5,7 +5,7 @@ interface JSONResp{
     status: number;
     baseRole: string;
 }
-const API_URL = "https://kpiserver-production.up.railway.app/";
+const API_URL = "https://kpi-production.up.railway.app/";
 export const login = async(email:string, password:string)=>{
   const body ={email, password}
     return await axios.post(API_URL+"api/auth/login", body)

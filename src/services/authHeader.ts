@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-const API_URL="https://kpiserver-production.up.railway.app/";
+const API_URL="https://kpi-production.up.railway.app/";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

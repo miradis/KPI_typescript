@@ -19,6 +19,7 @@ import { ProtectedRoute } from './common/ProtectedRoute';
 import { NotFoundPage } from './component/pages/NotFoundPage/NotFoundPage';
 import { CreateTaskPage } from './component/pages/CreateTaskPage/CreateTaskPage';
 import { EventProgressPage } from './component/pages/EventProgressPage/EventProgressPage';
+import { EditAccountPage } from './component/pages/EditAccountPage/EditAccountPage';
 function App() { 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -49,10 +50,12 @@ function App() {
         <Route path="/events/reports" element={<MainContent><div>Reports</div></MainContent>} />
         <Route path="/events/assigning" element={<MainContent><AssignPage /></MainContent>} />
         <Route path="/events/assigning/createPage" element={<MainContent><CreateAccountPage /></MainContent>} />
+        <Route path="/events/assigning/editPage" element={<MainContent><EditAccountPage/></MainContent>}/>
         <Route path="/teachers" element={<MainContent><TeacherPageList /></MainContent>} />
         <Route path="/teachers/:id" element={<MainContent><ProfilePage /></MainContent>} />
         <Route path="/profile" element={<MainContent><ProfilePage /></MainContent>} />
         <Route path="/submission/:id" element={<MainContent><SubmissionBox /></MainContent>}/>
+        
         </Route>
         <Route path='/LogOut'/>
         <Route path="/unauthorized" element={<Unauthorized />}/>

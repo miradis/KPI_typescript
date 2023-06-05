@@ -16,6 +16,23 @@ export const getAllUsers =async() =>{
   })
   return response.data;
 }
+export const updateUser=async(id:string,email:string,name:string,role:string[])=>{
+  const body={
+    email:email,
+    name:name,
+    role:role
+  }
+  await axiosInstance.put(`/users/update/${id}`,body)
+  .catch((error)=>{
+    throw error;
+  })
+}
+export const deleteUser=async(id:string)=>{
+  await axiosInstance.delete(`/user/delete/${id}`)
+  .catch((error)=>{
+    throw error;
+  })
+}
 
 export const getAllTeachers = async (): Promise<ITeacher[]> => {
   const response = await axiosInstance.get<ITeacher[]>("teachers");
