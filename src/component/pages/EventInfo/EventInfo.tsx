@@ -198,8 +198,11 @@ else {
         <>
         <BackButton/>
         <Space/>
+        <Card style={{marginTop:"1%"}}>
+            <Title>{eventText}</Title>
+        </Card>
         <Card style={{marginTop:"20px"}}>
-        <Text>{eventText}
+        <Text>{event?.event_description}
 </Text>
         <Divider/>
         <Descriptions title="Submission status" column={1} bordered>
@@ -220,7 +223,7 @@ else {
 
                 {event?.submission_status && role.includes("ROLE_TEACHER") && <>
                 <Button type='primary' onClick={handleSubmission}>Edit Sumbission</Button>
-                <Button>Remove Submission</Button></>}
+                </>}
                 {role.includes("ROLE_ADMIN") && <Button type='primary' onClick={showModal}>Grade</Button>}
                 <Modal title="Scale" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} >
                 <Row style={{

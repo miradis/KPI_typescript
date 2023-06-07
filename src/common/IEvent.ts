@@ -11,6 +11,7 @@ export interface IEvent {
     teacher_name:string,
     department_name:string;
     teacher_id:string,
+    event_description:string;
   }
   export interface IEventSmall {
     event_id: number;
@@ -22,6 +23,7 @@ export interface IEvent {
   export interface Event {
     event_id: number;
     event_name: string;
+    event_description:string;
     event_percentage: number;
     event_rates:string;
   }

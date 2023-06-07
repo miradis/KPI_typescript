@@ -34,7 +34,6 @@ const CreateTaskPage =() =>{
       }, [form,id]);
     const onFinish = (values: any) => {
         if (isCreateLink) {
-            
             handleCreateEvent(values);
         } else {
             
@@ -57,8 +56,8 @@ const CreateTaskPage =() =>{
         throw error
     }
     }
-    const handleEditEvent =async(values:{name:string, percentage:number, rate:string})=>{
-        const {name, percentage, rate} =values;
+    const handleEditEvent =async(values:{name:string, percentage:number, rate:string,descritpion:string})=>{
+        const {name, percentage, rate,descritpion} =values;
         try {
             if (event?.event_id){
                 await editEvent(event?.event_id,name,percentage,rate)
@@ -95,6 +94,7 @@ const CreateTaskPage =() =>{
         initialValues={{
             name: event?.event_name,
             percentage: event?.event_percentage,
+            description: event?.event_description,
             rate: event?.event_rates
         }}
         onFinish={onFinish}
@@ -103,8 +103,10 @@ const CreateTaskPage =() =>{
         wrapperCol={{ span: 8 }}
         style={{display:"flex", flexDirection:"column", maxWidth:"100%"}}>
             <Title level={3} style={{alignSelf:'center'}}>Task</Title>
-
-            <Form.Item label="Name of event:" name="name">
+            <Form.Item label="Name of event" name="name"> 
+            <Input/>
+            </Form.Item>
+            <Form.Item label="Description of event:" name="description">
                 <Input.TextArea rows={8}/>
             </Form.Item>
             <Form.Item label="Percentage:" name="percentage">
