@@ -45,7 +45,6 @@ const SubmissionBox = ()=>{
 
   const handleUpload = async (file: RcFile): Promise<void> => {
     const response = await submission(id, file as File);
-    console.log("Response:"+response); // Do something with the response if needed
     message.success(`${file.name} file uploaded successfully.`);
     getCurrentUser()
   };
@@ -53,6 +52,8 @@ const SubmissionBox = ()=>{
   const props: UploadProps = {
     name: 'file',
     multiple: true,
+    accept:'.pdf,.doc,.docx',
+    
     customRequest: async (options: any): Promise<void> => {
       const { file } = options;
       await handleUpload(file as RcFile);
@@ -64,10 +65,23 @@ const SubmissionBox = ()=>{
       } else if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
+      
     },
-    onDrop(e: React.DragEvent<HTMLElement>) {
-      console.log('Dropped files', e.dataTransfer.files);
+    onDrop: (event: React.DragEvent<HTMLDivElement>): void => {
+      // Prevent the browser's default handling of the event
+      event.preventDefault();
+  
+      // Extract the dropped files from the event
+      const droppedFiles: FileList = event.dataTransfer.files;
+  
+      // Handle the dropped files
+      for (let i = 0; i < droppedFiles.length; i++) {
+        const file: File = droppedFiles[i];
+        // Perform any necessary operations with the dropped file
+        console.log('Dropped file:', file);
+      }
     },
+   
   };
 
   const handleDeleteItem =async(id:string)=>{
@@ -81,7 +95,8 @@ const SubmissionBox = ()=>{
     }
   }
   const renderSubmission = (sub: ISubmission, ) => (
-    <List.Item actions={[<Button icon={<DeleteOutlined/>} type="link" onClick={()=>handleDeleteItem(sub.submission_id)}></Button>]}>
+    <List.Item actions={[<Button icon={<DeleteOutlined/>} type="link"
+     onClick={()=>handleDeleteItem(sub.submission_id)}></Button>]}>
       <div style={{ display: "flex", alignItems: "center" }}>
       <PDFIcon />
       <span style={{ marginLeft: "10px" }}>
@@ -99,7 +114,10 @@ const SubmissionBox = ()=>{
         </Card>
         <Card style={{marginTop:"20px", alignItems:"center", alignContent:"center"}} >
         <Dragger style={{width:"80%", alignSelf:"flex-"}} {...props}>
-            <>
+        {submissions && Array.isArray(submissions) ?(
+        <List size="small"  dataSource={submissions} renderItem={renderSubmission} style={{width:"80%", alignSelf:"center"}}/>): (
+      <>
+       <>
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
               </p>
@@ -108,12 +126,22 @@ const SubmissionBox = ()=>{
                 Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
               </p>
             </>
-  </Dragger >
-  {submissions && Array.isArray(submissions) && (
-      <>
-      <List dataSource={submissions} renderItem={renderSubmission} style={{width:"80%"}}/>
       </>
     )}
+  </Dragger >
+  {/* {submissions && Array.isArray(submissions) ?(<List dataSource={submissions} renderItem={renderSubmission} style={{width:"80%"}}/>): (
+      <>
+       <>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">Click or drag file to this area to upload</p>
+              <p className="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
+              </p>
+            </>
+      </>
+    )} */}
   {/* <Row style={{justifyContent:"center"}}>
             <Space size={[20, 10]} style={{marginTop:"20px"}}>
         <Button type='primary'>Edit Sumbission</Button>

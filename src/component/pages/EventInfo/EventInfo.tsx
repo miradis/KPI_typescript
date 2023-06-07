@@ -163,7 +163,9 @@ else {
             <Panel style={{background:"FFFFF"}} key="1" header={<Text type='secondary'>Comments({resultComment? "1": "0"})</Text>}>
                 {resultComment && 
                 <List>
-                <List.Item actions={[role.includes("ROLE_ADMIN") ?<Button icon={<DeleteOutlined/>} onClick={handleDeleteComment} type='link'/>:<Button type='link'/>]}>
+                <List.Item actions={[role.includes("ROLE_ADMIN") ?
+                <Button icon={<DeleteOutlined/>} onClick={handleDeleteComment} type='link'/>:
+                <Button type='link'/>]}>
                     {resultComment}
                     </List.Item></List>}
                 
@@ -172,13 +174,15 @@ else {
                 />
                 {resultComment ? (role.includes('ROLE_TEACHER') && (
                     <Space wrap style={{marginTop:"1%"}}>
-                <Button  size="small" style={{ cursor: "pointer"}} onClick={() => handleAddComment(commentValue)}>
+                <Button  size="small" style={{ cursor: "pointer"}} 
+                onClick={() => handleAddComment(commentValue)}>
                 Update 
                 </Button>
                 </Space>)):(
                     role.includes('ROLE_TEACHER') && (
                         <Space wrap style={{marginTop:"1%"}}>
-                    <Button  size="small" style={{ cursor: "pointer"}} onClick={() => handleAddComment(commentValue)}>
+                    <Button  size="small" style={{ cursor: "pointer"}}
+                    onClick={() => handleAddComment(commentValue)}>
                     Add 
                     </Button>
                     </Space>)
@@ -188,24 +192,20 @@ else {
             </Collapse>
             </>
         );
+        const eventText = event ? event?.event_name : submissionIds?.event_name;
+        const firstSentence = eventText?.split('. ')[0];
     return(
         <>
         <BackButton/>
-        <Card style={{marginTop:"20px"}}>
-            <Title> {event ? event?.event_name:submissionIds?.event_name}</Title>
-        </Card>
         <Space/>
         <Card style={{marginTop:"20px"}}>
-        <Title>Описание</Title>
-        <Text>
-            
+        <Text>{eventText}
 </Text>
         <Divider/>
         <Descriptions title="Submission status" column={1} bordered>
             <Descriptions.Item label="Sumbission status" labelStyle={{width:"150px"}}>{event ? (event?.submission_status ? "Submitted" :"Not Submitted"): (submissionIds?.submission_status ? "Submitted":"Not Submitted")}</Descriptions.Item>
-            <Descriptions.Item label="Status" labelStyle={{width:"150px"}}>{event? (event?.approve_name ? "Submitted" :"Not Submitted"):(submissionIds?.approve_name)}</Descriptions.Item>
+            <Descriptions.Item label="Status" labelStyle={{width:"150px"}}>{event? (event?.approve_name ):(submissionIds?.approve_name)}</Descriptions.Item>
             <Descriptions.Item label="Last modified" labelStyle={{width:"150px"}}>{event?.modify_date}</Descriptions.Item>
-            
             
                 <Descriptions.Item  label="File submission" labelStyle={{width:"150px"}} >
                 {submissionIds ? submissionIds.submissions.map((sub, index) => renderSubmission(sub, index)) : null}

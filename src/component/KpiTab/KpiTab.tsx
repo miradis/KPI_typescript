@@ -4,7 +4,7 @@ import { ITeacher } from "../../common/ITeacher";
 import { Button, Table, Typography } from "antd";
 import {DownloadOutlined} from '@ant-design/icons'
 
-const {Text} =Typography
+
 const KpiTab = ({ currentUser, columns }: { currentUser: ITeacher | undefined; columns: any[] }) => {
   
   const DownloadPDF = () => {
@@ -18,36 +18,6 @@ const KpiTab = ({ currentUser, columns }: { currentUser: ITeacher | undefined; c
       pdf.text(`
       For the period from August 10, 2021 to August 14, 2022`,10,30)
       pdf.text(`During this period, the following tasks were completed:`,10,40)
-  
-      // const tableColumns = ["Task", "Percentage", "Submission", "Status"];
-      // const tableData =
-      //   currentUser?.teacher_events.map((event) => [
-          
-      //     event.event_name,
-      //     event.event_percentage,
-      //     event.submission_status ? "Submitted" : "Not Submitted",
-      //     event.approve_name,
-      //   ]) || [];
-  
-      // const tableStyles = {
-      //   fontSize: 10,
-      //   color: "plain",
-      //   lineColor: [0, 0, 0], // black color for table borders
-      //   fontStyle: "normal", // remove bold style from header cells
-      //   lineWidth: 0.1, // thin border lines
-      //   cellPadding: 5, // padding for cell content
-      //   headerStyle: {
-      //     fillCollor: [200, 200, 200],
-      //   },
-      // };
-  
-      // autoTable(pdf, {
-      //   head: [tableColumns],
-      //   body: tableData,
-      //   startY: 30,
-      //   styles: tableStyles as any,
-      // });
-  
       pdf.save("report.pdf");
     };
   

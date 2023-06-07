@@ -9,7 +9,7 @@ import { axiosInstance } from "./authHeader";
 
 
 export const getAllUsers =async() =>{
-  const response =await axiosInstance.get("users")
+  const response =await axiosInstance.get("/users/except")
   .catch((error)=>{
     console.log("ERROR:",error);
     throw error
@@ -20,9 +20,9 @@ export const updateUser=async(id:string,email:string,name:string,role:string[])=
   const body={
     email:email,
     name:name,
-    role:role
+    role:role,
   }
-  await axiosInstance.put(`/users/update/${id}`,body)
+  await axiosInstance.put(`/user/update/${id}`,body)
   .catch((error)=>{
     throw error;
   })
@@ -52,6 +52,7 @@ export const getTeacher = async (id: string): Promise<ITeacher> => {
   return teacher;
 };
 
+
 export const getEvent = async (id: string): Promise<IEventSmall> => {
   const response = await axiosInstance.get<IEventSmall>(
     `status/event/getById/${id}`
@@ -60,6 +61,23 @@ export const getEvent = async (id: string): Promise<IEventSmall> => {
   console.log("ID:"+id);
   return event;
 };
+// export const getReportByDep = async (id: string) => {
+//   console.log("ID:", id);
+//   const response = await axiosInstance.get(`/report/department/${id}/?exportType=PDF`, {
+//     responseType: 'arraybuffer', // Set the response type to 'arraybuffer'
+//   }).catch((error) => {
+//     throw error;
+//   });
+//   return response.data;
+// };
+export const getReportByDep = async(url:string)=>{
+  
+  const response =await axiosInstance.get(url,{responseType: 'arraybuffer'})
+  .catch((error)=>{
+    throw error
+  })
+  return response.data
+}
 
 
 export const submission = async (id: string, file: File) => {
@@ -271,4 +289,21 @@ export const getTeacherByEventId=async(id:string)=>{
     throw error
   })
   return response.data;
+}
+export const getUserById= async(Id:string)=>{
+  const res = await axiosInstance.get(`/user/getById/${Id}`)
+  .catch((error)=>{
+    console.log("ERROR:"+error);
+    throw error
+  })
+  return res.data;
+}
+
+export const getTeacherById=async(id:string)=>{
+  const res= await axiosInstance.get(`teachers/getById/${id}`)
+  .catch((error)=>{
+    console.log("ERROR:"+error);
+    throw error
+  })
+  return res.data;
 }

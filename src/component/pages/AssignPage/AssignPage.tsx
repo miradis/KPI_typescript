@@ -20,11 +20,7 @@ const AssignPage =() =>{
     const [selectedEmail, setSelectedEmail] =useState<ITeacher | undefined>(undefined)
     const [departments, setDepartments] =useState<IDepartment[] | undefined>(undefined)
     const [rates, setRates] =useState<IRate[] | undefined>(undefined)
-    const [componentSize, setComponentSize] = useState<SizeType | 'default'>('default');
 
-    const onFormLayoutChange = ({ size }: { size: SizeType }) => {
-      setComponentSize(size);
-    }
     useEffect(()=>{
         const fetchCategroies =async() =>{
             const getCategories = await getAllCategories();
@@ -122,7 +118,7 @@ const AssignPage =() =>{
     wrapperCol={{ span: 8 }}
      style={{ maxWidth: "100%", display:"flex", flexDirection:"column",}}>
 
-        <Form.Item label="Select teachers">
+        <Form.Item label="Select users">
           <Select 
           style={{width:"100%"}}
           onChange={handleTeacherChange}

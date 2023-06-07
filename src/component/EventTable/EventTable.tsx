@@ -46,13 +46,13 @@ const EventTable: React.FC<EventTableProps> = ({ status, handleDelete }) => {
       title: "Percentage",
       dataIndex: "event_persentage",
       key: "eventPercentage",
-      width:200,
+      width:"10%",
     },
     {
       title: "Action",
       dataIndex: "",
       key: "action",
-      width: 100,
+      width: "20%",
       render: (_: string, record: any) => {
         return(
         <Space size="small">

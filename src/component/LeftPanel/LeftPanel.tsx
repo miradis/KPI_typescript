@@ -42,14 +42,8 @@ const LeftPanel = () => {
         {
           key: '4',
           icon: <VideoCameraOutlined />,
-          label: 'Tasks',
+          label: 'Events',
           link: '/events/tasks',
-        },
-        {
-          key: '5',
-          icon: <VideoCameraOutlined />,
-          label: 'Reports',
-          link: '/events/reports',
         },
         {
           key: '6',

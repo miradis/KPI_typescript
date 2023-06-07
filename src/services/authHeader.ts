@@ -11,6 +11,8 @@ axiosInstance.interceptors.request.use((config) => {
   const token = sessionData ? JSON.parse(sessionData).accessToken : null;
   config.headers.Authorization = `Bearer ${token}`;
   config.headers["Cache-Control"] = "no-cache";
+  config.headers['Content-Type']="application/pdf"
+
   return config;
 });
 axiosInstance.interceptors.response.use(

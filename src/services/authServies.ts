@@ -1,10 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { axiosInstance } from "./authHeader";
-interface JSONResp{
-    status: number;
-    baseRole: string;
-}
 const API_URL = "https://kpi-production.up.railway.app/";
 export const login = async(email:string, password:string)=>{
   const body ={email, password}
@@ -37,17 +33,6 @@ export const login = async(email:string, password:string)=>{
         throw error
       });
   };
-
-  // export const getUser = () => {
-  //   const userStr = Cookies.get("user");
-  
-  //   if (userStr === undefined) return { teacher_id: '' }; // Provide a default value for teacher_id
-  //   const decodedUserStr = decodeURIComponent(userStr);
-  //   const userObj = JSON.parse(decodedUserStr);
-  
-  //   return userObj;
-  // };
-
 
   export const getAuth=()=>{
     const token =Cookies.get("token");

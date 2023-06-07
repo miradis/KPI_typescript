@@ -20,17 +20,9 @@ import { NotFoundPage } from './component/pages/NotFoundPage/NotFoundPage';
 import { CreateTaskPage } from './component/pages/CreateTaskPage/CreateTaskPage';
 import { EventProgressPage } from './component/pages/EventProgressPage/EventProgressPage';
 import { EditAccountPage } from './component/pages/EditAccountPage/EditAccountPage';
+import { EditPage } from './component/pages/EditPage/EditPage';
 function App() { 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      const role =await getRole();
-      setIsLoading(false)
-      
-    };
-    fetchCurrentUser();
-  }, []);
+  
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Routes>
@@ -39,28 +31,44 @@ function App() {
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute/> } >
-        <Route path="/main" element={<MainContent><MainPage /></MainContent>} />
-        <Route path="/main" element={<MainContent><MainPage /></MainContent>} />
-        <Route path="/events/:id" element={<MainContent><EventsInfo /></MainContent>} />
-        <Route path="/events/:teacherId/:eventId" element={<MainContent><EventsInfo /></MainContent>} />
-        <Route path="/events/tasks" element={<MainContent><EventPage /></MainContent>}/>
-        <Route path='/events/tasks/:id' element={<MainContent><EventProgressPage/></MainContent>}/>
-        <Route path='/events/tasks/create/:id' element={<MainContent><CreateTaskPage/></MainContent>}/>
-        <Route path="/events/tasks/edit/:id" element={<MainContent><CreateTaskPage /></MainContent>} />
-        <Route path="/events/reports" element={<MainContent><div>Reports</div></MainContent>} />
-        <Route path="/events/assigning" element={<MainContent><AssignPage /></MainContent>} />
-        <Route path="/events/assigning/createPage" element={<MainContent><CreateAccountPage /></MainContent>} />
-        <Route path="/events/assigning/editPage" element={<MainContent><EditAccountPage/></MainContent>}/>
-        <Route path="/teachers" element={<MainContent><TeacherPageList /></MainContent>} />
-        <Route path="/teachers/:id" element={<MainContent><ProfilePage /></MainContent>} />
-        <Route path="/profile" element={<MainContent><ProfilePage /></MainContent>} />
-        <Route path="/submission/:id" element={<MainContent><SubmissionBox /></MainContent>}/>
+        <Route path="/main" element={
+        <MainContent><MainPage /></MainContent>} />
+        <Route path="/main" element={
+        <MainContent><MainPage /></MainContent>} />
+        <Route path="/events/:id" element={
+        <MainContent><EventsInfo /></MainContent>} />
+        <Route path="/events/:teacherId/:eventId" element={
+        <MainContent><EventsInfo /></MainContent>} />
+        <Route path="/events/tasks" element={
+        <MainContent><EventPage /></MainContent>}/>
+        <Route path='/events/tasks/:id' element={
+        <MainContent><EventProgressPage/></MainContent>}/>
+        <Route path='/events/tasks/create/:id' element={
+        <MainContent><CreateTaskPage/></MainContent>}/>
+        <Route path="/events/tasks/edit/:id" element={
+        <MainContent><CreateTaskPage /></MainContent>} />
+        <Route path="/events/assigning" element={
+        <MainContent><AssignPage /></MainContent>} />
+        <Route path="/events/assigning/createPage" element={
+        <MainContent><CreateAccountPage /></MainContent>} />
+        <Route path="/events/assigning/editPage" element={
+        <MainContent><EditAccountPage/></MainContent>}/>
+        <Route path="/teachers" element={
+        <MainContent><TeacherPageList /></MainContent>} />
+        <Route path="/events/assignins/editPage/:id/:status" element={<MainContent><EditPage/></MainContent>}></Route>
+        <Route path="/teachers/:id" element={
+        <MainContent><ProfilePage /></MainContent>} />
+        <Route path="/profile" element={
+        <MainContent><ProfilePage /></MainContent>} />
+        <Route path="/submission/:id" element={
+        <MainContent><SubmissionBox /></MainContent>}/>
         
         </Route>
         <Route path='/LogOut'/>
-        <Route path="/unauthorized" element={<Unauthorized />}/>
-        <Route path="*" element={<NotFoundPage/>}/>
-        {/* <Route path="/events/tasks/teachers" element={<MainContent><ProgressListPage/></MainContent>}/> */}
+        <Route path="/unauthorized" element={
+        <Unauthorized />}/>
+        <Route path="*" element={
+        <NotFoundPage/>}/>
 
       </Routes>
     </Layout>

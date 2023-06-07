@@ -7,7 +7,8 @@ export interface IUser {
   roles:string[]
 } 
 export interface ITeacher {
-    teacher_id: number;
+    roles:string[]
+    teacher_id: string;
     category_name: string;
     status_name: string;
     kpi_sum:number;

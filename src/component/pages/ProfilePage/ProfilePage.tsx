@@ -19,6 +19,8 @@ const ProfilePage =()=>{
       title: 'Task',
       dataIndex: 'event_name',
       key: 'event_name',
+      ellipsis: true, // Enable ellipsis for long text
+      width: 600, // Set a fixed width for the table cell
       render: (text:string, record:IEvent) => {
         if(record){
         const queryParams = {

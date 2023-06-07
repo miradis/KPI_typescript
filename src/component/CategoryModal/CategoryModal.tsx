@@ -35,8 +35,6 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
   const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
   const [form] = Form.useForm();
   const onFinish = async () => {
-    
-  
     try {
       await form.validateFields();
       const { attribute, editName} = form.getFieldsValue();

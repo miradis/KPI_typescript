@@ -20,9 +20,13 @@ const CreateTaskPage =() =>{
             if (id){
             const response =await getEditEvent(id)
             setEvent(response)
-            if (form) {
-                form.setFieldsValue(response);
-              }
+            if (form && response) {
+              form.setFieldsValue({
+                  name: response.event_name,
+                  percentage: response.event_percentage,
+                  rate: response.event_rates
+              });
+          }
             }
         }
         fetchEvent()

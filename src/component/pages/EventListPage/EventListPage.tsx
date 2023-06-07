@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Card, Button, Typography } from "antd";
+import { Card, Button, Typography, Select, Form } from "antd";
 import CategoryTabs from "../../CategoryTabs/CategoryTabs";
 import CategoryModal from "../../CategoryModal/CategoryModal";
-import { createCategory, createStatus, deleteCategory, deleteEvent, deleteStatus, getAllCategories, updateCategory, updateStatus } from "../../../services/userService";
+import { createCategory, createStatus, deleteCategory, deleteEvent, deleteStatus, downloadFile, getAllCategories, getAllDepartaments, getReportByDep, updateCategory, updateStatus } from "../../../services/userService";
 import { Event, ITask } from "../../../common/IEvent";
+import { IDepartment } from "../../../common/ITeacher";
 
 
 const { Title } = Typography;
@@ -23,7 +24,8 @@ const EventPage: React.FC<EventPageProps> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [save, setSave] =useState<boolean>(false);
   const [modalAction, setModalAction] = useState<ModalAction | null>(null);
-
+  const [departments, setDepartaments] =useState<IDepartment[] | undefined>(undefined);
+  const [form] =Form.useForm()
   //Getting selected category and status from CategoryTable
   const handleCurrentStatus =(status_id:number)=>{
     setCurrentStatus(status_id)
@@ -46,6 +48,7 @@ const EventPage: React.FC<EventPageProps> = () => {
   }
   const handleUpdateStatus = async (newStatus:string)=>{
     if (currentStatus){
+      
       await updateStatus(currentStatus,newStatus);
       handleGetAllEvents()
     }
@@ -145,10 +148,113 @@ const EventPage: React.FC<EventPageProps> = () => {
     fetchCategories();
   }, []);
 
+  useEffect(()=>{
+    const fetchDepartamets =async ()=>{
+      const alldepartments =await getAllDepartaments();
+      setDepartaments(alldepartments);
+    } 
+    fetchDepartamets();
+  },[])
+  const onFinishFailed =()=>{
 
+  }
+  const onFinish =(values:any)=>{
+    handleDownLoad(values);
+  }
+  const handleDownLoad=async(values:{department:string,category:string,status:string})=>{
+    try {
+          const { department, category, status } = values;
+          console.log(department)
+          let url = ``;
+      
+          if (department && category && status) {
+            url = `report/department/${department}/category/${category}/status/${status}/?exportType=PDF`;
+          } else if (department && category) {
+            url = `report/department/${department}/category/${category}/?exportType=PDF`;
+          } else if (category && status) {
+            url = `report/category/${category}/status/${status}/?exportType=PDF`;
+          } else if (category) {
+            url = `report/category/${category}/?exportType=PDF`;
+          } else if (department) {
+            url = `report/department/${department}/?exportType=PDF`;
+          }
+          console.log(url);
+          const response = await getReportByDep(url);
+          const pdfUrl = window.URL.createObjectURL(new Blob([response], { type: 'application/pdf' }));
+          const link = document.createElement('a');
+          link.href = pdfUrl;
+          link.setAttribute('download', 'report.pdf');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(pdfUrl);
+        } catch (error) {
+          console.log(error);
+        }
+    
+  //   try{
+  //     const {department} =values;
+  //     const file =await getReportByDep(department);
+  //     const blob =new Blob([file], {type: 'application/pdf'})
+  //     const url =URL.createObjectURL(blob);
+  //     const link =document.createElement("a")
+  //     link.href =url;
+  //     link.download = `time`;
+  //     link.click();
+  //     URL.revokeObjectURL(url)
+  // }
+  // catch(error){
+  //     console.log(error)
+  // }
+    // try {
+    //   const { department } = values;
+    //   const response = await getReportByDep(department);
+    //   const url = window.URL.createObjectURL(new Blob([response], { type: 'application/pdf' }));
+    //   const link = document.createElement('a');
+    //   link.href = url;
+    //   link.setAttribute('download', 'report.pdf');
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    //   window.URL.revokeObjectURL(url);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+  // const handleDownLoad = async (values: any) => {
+  //   try {
+  //     const { department, category, status } = values;
+  //     console.log(department)
+  //     let url = ``;
+  
+  //     if (department && category && status) {
+  //       url = `report/department/${department}/category/${category}/status/${status}/?exportType=PDF`;
+  //     } else if (department && category) {
+  //       url = `report/department/${department}/category/${category}/?exportType=PDF`;
+  //     } else if (category && status) {
+  //       url = `report/category/${category}/status/${status}/?exportType=PDF`;
+  //     } else if (category) {
+  //       url = `report/category/${category}/?exportType=PDF`;
+  //     } else if (department) {
+  //       url = `report/department/${department}/?exportType=PDF`;
+  //     }
+  //     console.log(url);
+  //     const response = await getReportByDep(url);
+  //     const pdfUrl = window.URL.createObjectURL(new Blob([response], { type: 'application/pdf' }));
+  //     const link = document.createElement('a');
+  //     link.href = pdfUrl;
+  //     link.setAttribute('download', 'report.pdf');
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //     window.URL.revokeObjectURL(pdfUrl);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   return (
     <>
-    <Title level={2}>Tasks</Title>
+    <Title level={2}>Events</Title>
       <Card>
         <CategoryTabs 
         categories={categories} 
@@ -159,6 +265,43 @@ const EventPage: React.FC<EventPageProps> = () => {
         handleEditStatus={handleEditStatus}
          />
         {save && <Button type="primary">Save</Button>}
+      </Card>
+      <Card style={{marginTop:"1%"}}>
+        <Title level={2}>Report</Title>
+        <Form
+        labelCol={{span:2}}
+        wrapperCol={{span:8}}
+        form={form}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        >
+          <Form.Item label="Departments" name="department">
+  <Select placeholder="Select department" options={departments?.map((dep) => ({
+    label: dep.department_name,
+    value: dep.department_id
+  }))} allowClear>
+  </Select>
+</Form.Item>
+
+<Form.Item label="Category:" name="category">
+  <Select placeholder="Select Category" options={categories?.map((cat) => ({
+    label: cat.category_name,
+    value: cat.category_id,
+  }))} allowClear>
+  </Select>
+</Form.Item>
+
+<Form.Item label="Status:" name="status">
+  <Select placeholder="Select Status" options={categories?.map((cat) =>
+    cat.statuses?.map((status) => ({
+      label: status.status_name,
+      value: status.status_id,
+    }))
+  ).flat()} allowClear>
+  </Select>
+</Form.Item>
+        <Button type="primary" htmlType="submit">Generate report</Button>
+        </Form>
       </Card>
       <CategoryModal
         modalAction= {modalAction}
@@ -173,13 +316,9 @@ const EventPage: React.FC<EventPageProps> = () => {
         createCategory={handleCreateCategory}
         updateCategory={handleUpdateCategory}
         deleteCategory ={handleDeleteCategory}
-
-        
       />
-      {/* <CategoryModal
-      
-      /> */}
     </>
+    
   );
 };
 

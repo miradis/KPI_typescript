@@ -12,10 +12,6 @@ type MainContent ={
 };
 
 function MainContent({children}:MainContent) {
-// const {colorBgContainer} =theme.useToken<{
-//     colorBgContainer:string;
-
-// }>('ColorBgContainer')
 const [userRole, setUserRole] = useState<string[] | undefined>(undefined);
   useEffect(()=>{
     const getUserRole = async () => {
@@ -41,7 +37,7 @@ return (
           color: '001529',
           height: '80px',
           padding:"5px 15px 0px 0px"
-          // background:colorBgContainer
+          
         }}
       >
       <Row>
@@ -63,7 +59,7 @@ return (
           style={{
             padding: 24,
             minHeight: 360,
-            // background: colorBgContainer,
+          
           }}
         >
           {children}
